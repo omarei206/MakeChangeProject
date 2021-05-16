@@ -4,6 +4,9 @@ import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class MakesChange {
+	
+	//This program is not in a while loop. Once you have completed your interaction you have to run the program again in 
+	//order to have another interaction.
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
@@ -23,7 +26,7 @@ public class MakesChange {
 		} else if (itemPrice < amtGiven) {
 			changeMachine(itemPrice, amtGiven);
 		} else {
-			System.err.println("... There was an error. Please give number amounts.");
+			System.err.println("There was an error. Please give number amounts!");
 		}
 	}
 
@@ -31,11 +34,11 @@ public class MakesChange {
 		// stores the amount of change is due
 		double actualChange = (amtGiven - itemPrice);
 		
+		//**** this is what I learned to use for precise decimal formatting****
 		DecimalFormat twoDeciPlace = new DecimalFormat("#.00");
 		System.out.println("Your change sums up to be: $" + twoDeciPlace.format(actualChange));
 		
-		// first we should make multiply by 100 and everything an integer to make math
-		// easier and more precise.
+		// I multiply by 100 to make an integer to make my numbers precise for output
 		int fullItemPrice = (int) (itemPrice * 100);
 		int fullAmtGiven = (int) (amtGiven * 100);
 		int change = fullAmtGiven - fullItemPrice;
