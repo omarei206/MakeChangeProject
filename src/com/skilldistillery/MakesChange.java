@@ -1,65 +1,104 @@
 package com.skilldistillery;
 
+import java.text.DecimalFormat;
 import java.util.Scanner;
-import java.lang.Math;
 
 public class MakesChange {
+
 	public static void main(String[] args) {
-		// get user input of amount tendered and amount given
-		double amountTendered;//Tendered means asked.
-		double amountGiven;
+		Scanner scanner = new Scanner(System.in);
+		double itemPrice;
+		double amtGiven;
 		
-		Scanner input = new Scanner(System.in);
-		System.out.println("Enter the price of the item: ");
-		amountTendered = input.nextDouble();
-		System.out.println("Enter the amount given to the cashier: ");
-		amountGiven = input.nextDouble();
-
-		// define doubles for dollars and coins
-		double hundredDollar = 100.00;
-		double twentyDollar = 20.00;
-		double tenDollar = 10.00;
-		double fiveDollar = 5.00;
-		double dollar = 1.00;
-		double quarter = 0.25;
-		double dime = 0.10;
-		double nickel = 0.05;
-		double penny = 0.01;
-
-		// round changeDue to 2 decimal places and calculate the modulus in a hierarchy
-		double changeDue = ((double) ((int) Math.round((amountGiven - amountTendered) * 100)) / 100.0);
-		double modHundred = ((double) ((int) Math.round((changeDue % hundredDollar) * 100)) / 100.0);
-		double modTwenty = ((double) ((int) Math.round((modHundred % twentyDollar) * 100)) / 100.0);
-		double modTen = ((double) ((int) Math.round((modHundred % tenDollar) * 100)) / 100.0);
-		double modFive = ((double) ((int) Math.round((modHundred % fiveDollar) * 100)) / 100.0);
-		double modDollar = ((double) ((int) Math.round((modHundred % dollar) * 100)) / 100.0);
-		double modQuarter = ((double) ((int) Math.round((modHundred % quarter) * 100)) / 100.0);
-		double modDime = ((double) ((int) Math.round((modHundred % dime) * 100)) / 100.0);
-		double modNickel = ((double) ((int) Math.round((modHundred % nickel) * 100)) / 100.0);
-		double modPenny = ((double) ((int) Math.round((modHundred % penny) * 100)) / 100.0);
-
-		// count number of dollar bills and coins
-		int numHundreds = (int) ((changeDue - modHundred) / (hundredDollar));
-		int numTwenties = (int) ((modHundred - modTwenty) / (twentyDollar));
-		int numTens = (int) ((modTwenty - modTen) / (tenDollar));
-		int numFives = (int) ((modTen - modFive) / (fiveDollar));
-		int numDollars = (int) ((modFive - modDollar) / (dollar));
-		int numQuarters = (int) ((modDollar - modQuarter) / (quarter));
-		int numDimes = (int) ((modQuarter - modDime) / (dime));
-		int numNickels = (int) ((modDime - modNickel) / (nickel));
-		int numPennies = (int) ((modNickel - modPenny) / (penny));
-
-		// return information to user
-		System.out.println("\nTotal amount of change to give: " + changeDue);
-		System.out.println("Number of hundred dollar bills to give: " + numHundreds);
-		System.out.println("Number of twenty dollar bills to give: " + numTwenties);
-		System.out.println("Number of ten dollar bills to give: " + numTens);
-		System.out.println("Number of five dollars bills to give: " + numFives);
-		System.out.println("Number of dollars bills to give: " + numDollars);
-		System.out.println("Number of quarters to give: " + numQuarters);
-		System.out.println("Number of dimes to give: " + numDimes);
-		System.out.println("Number of nickels to give: " + numNickels);
-		System.out.println("Number of pennies to give: " + numPennies);
-
+		System.out.println("Hi, how much is your item?");
+		itemPrice = scanner.nextDouble();
+		
+		System.out.println("How much are you giving?");
+		amtGiven = scanner.nextDouble();
+		
+		if (itemPrice > amtGiven) {
+			System.out.println("You do not have enough! Put this back.");
+		} else if (itemPrice == amtGiven) {
+			System.out.println("You gave the exact amount. Thank you, have a nice day!");
+		} else if (itemPrice < amtGiven) {
+			changeMachine(itemPrice, amtGiven);
+		} else {
+			System.err.println("... There was an error. Please give number amounts.");
+		}
 	}
+
+	public static void changeMachine(double itemPrice, double amtGiven) {
+		// stores the amount of change is due
+		double actualChange = (amtGiven - itemPrice);
+		
+		DecimalFormat twoDeciPlace = new DecimalFormat("#.00");
+		System.out.println("Your change sums up to be: $" + twoDeciPlace.format(actualChange));
+		
+		// first we should make multiply by 100 and everything an integer to make math
+		// easier and more precise.
+		int fullItemPrice = (int) (itemPrice * 100);
+		int fullAmtGiven = (int) (amtGiven * 100);
+		int change = fullAmtGiven - fullItemPrice;
+		
+		
+		// figure out the number of hundreds, fifties, coins etc by multiplying their values by 100 and 
+		// dividing change by their values
+		// set the change to now equal the remainder of change when divided by the bill and coin values
+		int hundredsAmt = (change / 10000);
+		change = (change % 10000);
+		int fiftiesAmt = (change / 5000);
+		change = (change % 5000);
+		int twentiesAmt = (change / 2000);
+		change = (change % 2000);
+		int tensAmt = (change / 1000);
+		change = (change % 1000);
+		int fivesAmt = (change / 500);
+		change = (change % 500);
+		int onesAmt = (change / 100);
+		change = (change % 100);
+		
+		int quartersAmt = (change / 25);
+		change = (change % 25);
+		int dimesAmt = (change / 10);
+		change = (change % 10);
+		int nickelsAmt = (change / 5);
+		change = (change % 5);
+		int penniesAmt = (change / 1);
+		change = (change % 1);
+		
+		
+		// I use if statements to control whether change amounts will be displayed
+		// I utilize the not boolean here to make my comparisons
+		if (hundredsAmt != 0) {
+			System.out.println("We owe you " + hundredsAmt + " hundreds.");
+		}	
+		if (fiftiesAmt != 0) {
+			System.out.println("We owe you " + fiftiesAmt + " fifties.");
+		}	
+		if (twentiesAmt != 0) {
+			System.out.println("We owe you " + twentiesAmt + " twenties.");
+		}
+		if (tensAmt != 0) {
+			System.out.println("We owe you " + tensAmt + " tens.");
+		}
+		if (fivesAmt != 0) {
+			System.out.println("We owe you " + fivesAmt + " fives.");			
+		}
+		if (onesAmt != 0) {
+			System.out.println("We owe you " + onesAmt + " ones.");			
+		}
+		if (quartersAmt != 0) {
+			System.out.println("We owe you " + quartersAmt + " quarters.");			
+		}
+		if (dimesAmt != 0) {
+			System.out.println("We owe you " + dimesAmt + " dimes.");			
+		}
+		if (nickelsAmt != 0) {
+			System.out.println("We owe you " + nickelsAmt + " nickels.");		
+		}
+		if (penniesAmt != 0) {
+			System.out.println("We owe you " + penniesAmt + " pennies.");			
+		}
+	}
+
 }
